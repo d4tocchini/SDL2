@@ -720,7 +720,7 @@ SetWindowStyle(SDL_Window * window, NSUInteger style)
 
     isFullscreenSpace = NO;
     inFullscreenTransition = NO;
-    
+
     [self windowDidExitFullScreen:nil];
 }
 
@@ -736,7 +736,7 @@ SetWindowStyle(SDL_Window * window, NSUInteger style)
         pendingWindowOperation = PENDING_OPERATION_NONE;
         [self setFullscreenSpace:NO];
     } else {
-        /* Unset the resizable flag. 
+        /* Unset the resizable flag.
            This is a workaround for https://bugzilla.libsdl.org/show_bug.cgi?id=3697
          */
         SetWindowStyle(window, [nswindow styleMask] & (~NSWindowStyleMaskResizable));
@@ -777,16 +777,16 @@ SetWindowStyle(SDL_Window * window, NSUInteger style)
 - (void)windowDidFailToExitFullScreen:(NSNotification *)aNotification
 {
     SDL_Window *window = _data->window;
-    
+
     if (window->is_destroying) {
         return;
     }
 
     SetWindowStyle(window, (NSWindowStyleMaskTitled|NSWindowStyleMaskClosable|NSWindowStyleMaskMiniaturizable|NSWindowStyleMaskResizable));
-    
+
     isFullscreenSpace = YES;
     inFullscreenTransition = NO;
-    
+
     [self windowDidEnterFullScreen:nil];
 }
 
@@ -1291,14 +1291,23 @@ SetWindowStyle(SDL_Window * window, NSUInteger style)
    a GraphicsContext and with a layer active instead (for OpenGL contexts). */
 - (void)drawRect:(NSRect)dirtyRect
 {
+
     /* Force the graphics context to clear to black so we don't get a flash of
        white until the app is ready to draw. In practice on modern macOS, this
        only gets called for window creation and other extraordinary events. */
+
     if ([NSGraphicsContext currentContext]) {
-        [[NSColor blackColor] setFill];
+        /* [[NSColor blackColor] setFill]; */
+        //[[NSColor clearColor] setFill];
+        [[NSColor windowBackgroundColor] set];
         NSRectFill(dirtyRect);
-    } else if (self.layer) {
-        self.layer.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
+    }
+    else if (self.layer) {
+        //self.backgroundColor = NSColor.clearColor();
+        //self.drawsBackground = [NSColor clearColor];
+        self.layer.opaque = false;
+        self.layer.backgroundColor = [NSColor clearColor].CGColor;
+        //self.layer.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
     }
 
     SDL_SendWindowEvent(_sdlWindow, SDL_WINDOWEVENT_EXPOSED, 0, 0);
@@ -1315,7 +1324,10 @@ SetWindowStyle(SDL_Window * window, NSUInteger style)
     /* Force the graphics context to clear to black so we don't get a flash of
        white until the app is ready to draw. In practice on modern macOS, this
        only gets called for window creation and other extraordinary events. */
-    self.layer.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
+
+    // self.layer.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
+    // self.layer.opaque = false;
+    self.layer.backgroundColor = [NSColor clearColor].CGColor;
     ScheduleContextUpdates((SDL_WindowData *) _sdlWindow->driverdata);
     SDL_SendWindowEvent(_sdlWindow, SDL_WINDOWEVENT_EXPOSED, 0, 0);
 }
@@ -1543,7 +1555,7 @@ Cocoa_CreateWindow(_THIS, SDL_Window * window)
     if (!(window->flags & SDL_WINDOW_OPENGL)) {
         return 0;
     }
-    
+
     /* The rest of this macro mess is for OpenGL or OpenGL ES windows */
 #if SDL_VIDEO_OPENGL_ES2
     if (_this->gl_config.profile_mask == SDL_GL_CONTEXT_PROFILE_ES) {
@@ -2013,7 +2025,7 @@ Cocoa_DestroyWindow(_THIS, SDL_Window * window)
 
         NSArray *contexts = [[data->nscontexts copy] autorelease];
         for (SDLOpenGLContext *context in contexts) {
-            /* Calling setWindow:NULL causes the context to remove itself from the context list. */            
+            /* Calling setWindow:NULL causes the context to remove itself from the context list. */
             [context setWindow:NULL];
         }
         [data->nscontexts release];

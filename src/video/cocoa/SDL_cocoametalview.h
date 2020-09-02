@@ -48,6 +48,8 @@
                      windowID:(Uint32)windowID;
 
 - (void)updateDrawableSize;
+// - (void)updateLayer;
+// - (void)drawRect:(NSRect)dirtyRect;
 
 /* Override superclass tag so this class can set it. */
 @property (assign, readonly) NSInteger tag;

@@ -91,7 +91,7 @@ SDL_MetalViewEventWatch(void *userdata, SDL_Event *event)
 
         [self updateDrawableSize];
     }
-  
+
     return self;
 }
 
@@ -123,6 +123,28 @@ SDL_MetalViewEventWatch(void *userdata, SDL_Event *event)
     metalLayer.drawableSize = NSSizeToCGSize(backingSize);
 }
 
+
+// UGH ....
+/* This is also called when a Metal layer is active.
+    - (void)updateLayer
+    {
+        // self.layer.backgroundColor = CGColorGetConstantColor(kCGColorBlack);
+        // self.layer.opaque = false;
+        self.layer.backgroundColor = [NSColor clearColor].CGColor;
+
+    }
+*/
+/* ...
+    - (void)drawRect:(NSRect)dirtyRect
+    {
+            CAMetalLayer *metalLayer = (CAMetalLayer *)self.layer;
+
+            metalLayer.opaque = false;
+            metalLayer.backgroundColor = [NSColor clearColor].CGColor;
+
+    }
+*/
+
 @end
 
 SDL_MetalView
@@ -146,7 +168,6 @@ Cocoa_Metal_CreateView(_THIS, SDL_Window * window)
 
     metalview = (SDL_MetalView)CFBridgingRetain(newview);
     [newview release];
-
     return metalview;
 }}
 
@@ -161,6 +182,7 @@ void *
 Cocoa_Metal_GetLayer(_THIS, SDL_MetalView view)
 { @autoreleasepool {
     SDL_cocoametalview *cocoaview = (__bridge SDL_cocoametalview *)view;
+
     return (__bridge void *)cocoaview.layer;
 }}
 

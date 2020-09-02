@@ -12,7 +12,11 @@ To compile and install SDL:
         * Read docs/README-macosx.md
 
         Mac OS X from the command line:
-        * Run './configure; make; make install'
+        * Run
+                ./autogen.sh
+                CC=clang CXX=clang++ MAKE=gmake ./configure --without-x;
+                    # --prefix=
+                gmake -j; gmake install;
 
         Linux and other UNIX systems:
         * Run './configure; make; make install'

@@ -580,7 +580,7 @@ METAL_CreateTexture(SDL_Renderer * renderer, SDL_Texture * texture)
             mtltexdesc.usage = MTLTextureUsageShaderRead;
         }
     }
-    
+
     id<MTLTexture> mtltexture = [data.mtldevice newTextureWithDescriptor:mtltexdesc];
     if (mtltexture == nil) {
         return SDL_SetError("Texture allocation failed");
@@ -1662,6 +1662,10 @@ METAL_CreateRenderer(SDL_Window * window, Uint32 flags)
 #else
     layer = (CAMetalLayer *)[(__bridge UIView *)view layer];
 #endif
+
+    // D4:
+    layer.opaque = false;
+    // layer.backgroundColor = [NSColor clearColor].CGColor;
 
     layer.device = mtldevice;
 
