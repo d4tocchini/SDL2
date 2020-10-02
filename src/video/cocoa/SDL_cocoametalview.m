@@ -123,7 +123,6 @@ SDL_MetalViewEventWatch(void *userdata, SDL_Event *event)
     metalLayer.drawableSize = NSSizeToCGSize(backingSize);
 }
 
-
 // UGH ....
 /* This is also called when a Metal layer is active.
     - (void)updateLayer
@@ -144,6 +143,11 @@ SDL_MetalViewEventWatch(void *userdata, SDL_Event *event)
 
     }
 */
+
+- (NSView *)hitTest:(NSPoint)point {
+    return nil;
+}
+
 
 @end
 

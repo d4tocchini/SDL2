@@ -198,6 +198,21 @@ extern DECLSPEC int SDLCALL SDL_AndroidGetExternalStorageState(void);
  */
 extern DECLSPEC const char * SDLCALL SDL_AndroidGetExternalStoragePath(void);
 
+/**
+   \brief Request permissions at runtime.
+
+   This blocks the calling thread until the permission is granted or
+   denied. Returns SDL_TRUE if the permission was granted.
+ */
+extern DECLSPEC SDL_bool SDLCALL SDL_AndroidRequestPermission(const char *permission);
+
+/**
+   \brief Open an URL / URI in the browser or other
+
+   \return 0 on success, or -1 on error.
+ */
+extern DECLSPEC int SDLCALL SDL_AndroidOpenURL(const char *url);
+
 #endif /* __ANDROID__ */
 
 /* Platform specific functions for WinRT */
